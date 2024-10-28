@@ -26,9 +26,10 @@ public class Cart {
         cartList.remove(item);
     }
 
-    public void placeOrder() {
-        Order orderToPlace = new Order(cartList, customer, cartTotal);
+    public void placeOrder(String specialRequest) {
+        Order orderToPlace = new Order(cartList, customer, cartTotal, specialRequest);
         customer.addOrder(orderToPlace);
+        Admin.addOrderToAdmin(orderToPlace);
         clearCart();
     }
 

@@ -34,7 +34,7 @@ public class Customer {
         this.password = newPassword;
     }
 
-    public void customerSignup(Scanner sc) {
+    public static void customerSignup(Scanner sc) {
         System.out.println("Enter username: ");
         String username = sc.nextLine();
         System.out.println("Enter password: ");
@@ -51,7 +51,7 @@ public class Customer {
         System.out.println("Username already exists.");
     }
 
-    public void customerLogin(String username, String password, Scanner sc) {
+    public static void customerLogin(String username, String password, Scanner sc) {
         Customer customerToLogin = findCustomerByUsername(username);
         if (customerToLogin == null) {
             System.out.println("Customer with username: " + username + " does not exist.");
@@ -60,7 +60,7 @@ public class Customer {
 
         if ((username.equals(customerToLogin.getUsername())) && (password.equals(customerToLogin.getPassword()))) {
             System.out.println("Login successful.");
-            displayCustomerMenu(sc);
+            customerToLogin.displayCustomerMenu(sc);
         }
         else {
             System.out.println("Login unsuccessful. Invalid credentials.");
@@ -92,7 +92,7 @@ public class Customer {
                     displayCartMenu(sc);
                     break;
                 case 3:
-                    System.out.println("Order tracking");
+                    displayOrderMenu(sc);
                     break;
                 case 4:
                     System.out.println("Successfully logged out.");
@@ -104,7 +104,7 @@ public class Customer {
         }
     }
 
-    public Customer findCustomerByUsername(String username) {
+    public static Customer findCustomerByUsername(String username) {
         for (Customer customer : allCustomers) {
             if (customer.getUsername().equals(username)) {
                 return customer;
@@ -152,8 +152,14 @@ public class Customer {
                     System.out.println("Cart cleared successfully.");
                     break;
                 case 7:
-                    currentCart.placeOrder();
-                    System.out.println("Order placed successfully.");
+                    if (currentCart.isCartEmpty()) {
+                        System.out.println("Cart is empty.");
+                        return;
+                    }
+                    System.out.println("Kindly enter special requests if any: ");
+                    String specialReq = sc.nextLine();
+                    currentCart.placeOrder(specialReq);
+                    System.out.println("Order placed successfully. Use cash or UPI on delivery.");
                     break;
                 case 8:
                     return;
@@ -330,5 +336,104 @@ public class Customer {
         currentCart.removeItem(itemToRemove);
     }
 
-    
+    private void displayOrderMenu(Scanner sc) {
+        while (true) {
+            int choice = -1;
+            System.out.println("Choose order operation: " + '\n' +
+                               "1. Order status" + '\n' +
+                               "2. Cancel order" + '\n' +
+                               "3. Order History" + '\n' +
+                               "4. Go back" + '\n');
+            while (!sc.hasNextInt()) {
+                System.out.println("Invalid input. Please enter a number.");
+                sc.nextLine();
+            }
+            choice = sc.nextInt();
+            sc.nextLine();
+
+            switch (choice) {
+                case 1:
+                    orderStatusCustomer();
+                    break;
+                case 2:
+                    cancelOrder(sc);
+                    break;
+                case 3:
+                    if (allOrders.isEmpty()) {
+                        System.out.println("No order history.");
+                        return;
+                    }
+                    for (Order order : allOrders) {
+                        order.displayOrderDetails();
+                    }
+                    break;
+                case 4:
+                    return;
+                default:
+                    System.out.println("Invalid option.");
+                    break;
+            }
+        }
+    }
+
+    private void orderStatusCustomer() {
+        if (allOrders.isEmpty()) {
+            System.out.println("No order history.");
+            return;
+        }
+
+        int count = 0;
+        for (Order order : allOrders) {
+            if (!(order.getOrderStatus().equals("Delivered"))) {
+                System.out.println("Order ID: " + order.getOrderID() + " Status: " + order.getOrderStatus());
+                count++;
+            }
+        }
+
+        if (count == 0) {
+            System.out.println("All orders are delivered. Kindly check order history.");
+        }
+    }
+
+    private void cancelOrder(Scanner sc) {
+        if (allOrders.isEmpty()) {
+            System.out.println("No order history.");
+            return;
+        }
+
+        int orderID = -1;
+        System.out.println("Enter order ID: ");
+        while (!sc.hasNextInt()) {
+            System.out.println("Invalid input. Please enter a number.");
+            sc.nextLine();
+        }
+        orderID = sc.nextInt();
+        sc.nextLine();
+
+        Order orderToCancel = null;
+        for (Order order : allOrders) {
+            if (order.getOrderID() == orderID) {
+                orderToCancel = order;
+                break;
+            }
+        }
+
+        if (orderToCancel == null) {
+            System.out.println("Order with ID: " + orderID + " does not exist.");
+            return;
+        }
+
+        if (orderToCancel.getOrderStatus().equals("Delivered")) {
+            System.out.println("Order with ID: " + orderID + " is already delivered.");
+            return;
+        }
+
+        if (!orderToCancel.getOrderStatus().equals("Placed")) {
+            System.out.println("Order with ID: " + " is cooking and cannot be cancelled.");
+            return;
+        }
+
+        orderToCancel.cancelOrder();
+        System.out.println("Order cancelled successfully. Your amount will be refunded if deducted.");
+    }
 }

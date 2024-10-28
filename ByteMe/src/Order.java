@@ -7,6 +7,8 @@ import java.util.TreeMap;
 public class Order {
     private static int orderNumber = 0;
     private final int orderID;
+    private String specialRequest;
+    private boolean specialRequestAccepted;
     private TreeMap<MenuItem, Integer> itemList;
     private Customer customer;
     private LocalDate orderDate;
@@ -17,7 +19,7 @@ public class Order {
     private boolean isRefunded;
     private static ArrayList<Order> allOrders = new ArrayList<>();
 
-    public Order(TreeMap<MenuItem, Integer> orderList, Customer customer, float orderTotal) {
+    public Order(TreeMap<MenuItem, Integer> orderList, Customer customer, float orderTotal, String specialRequest) {
         this.orderID = orderNumber;
         orderNumber++;
         this.customer = customer;
@@ -27,6 +29,8 @@ public class Order {
         this.orderTotal = orderTotal;
         this.isRefunded = false;
         this.orderStatus = "Placed";
+        this.specialRequest = specialRequest;
+        this.specialRequestAccepted = false;
         allOrders.add(this);
     }
 
@@ -36,12 +40,15 @@ public class Order {
                            "Date: " + orderDate + '\n' +
                            "Time: " + orderPlaceTime + '\n' +
                            "Delivered at: " + orderCompleteTime + '\n' +
+                           "Special request: " + specialRequest + '\n' +
+                           "Special request accepted: " + specialRequestAccepted + '\n' +
                            "Items: " );
         displayItemList();
     }
 
-    public void displayItemList() {
+    private void displayItemList() {
         if (itemList.isEmpty()) {
+            System.out.println("No items found");
             return;
         }
         for (MenuItem item : itemList.keySet()) {
@@ -83,18 +90,24 @@ public class Order {
 
         switch (choice) {
             case 1:
-                orderStatus = "Cooking";
+                this.orderStatus = "Cooking";
                 break;
             case 2:
-                orderStatus = "Out for delivery";
+                this.orderStatus = "Out for delivery";
                 break;
             case 3:
-                orderStatus = "Delivered";
-                orderCompleteTime = LocalTime.now();
+                this.orderStatus = "Delivered";
+                completeOrder();
                 break;
             default:
                 break;
         }
+    }
+
+    public void cancelOrder() {
+        this.orderStatus = "Canceled";
+        this.orderCompleteTime = LocalTime.now();
+        this.isRefunded = true;
     }
 
     public boolean getRefundStatus() {
@@ -107,5 +120,25 @@ public class Order {
 
     public void completeOrder() {
         this.orderCompleteTime = LocalTime.now();
+    }
+
+    public int getOrderID() {
+        return this.orderID;
+    }
+
+    public float getOrderTotal() {
+        return this.orderTotal;
+    }
+
+    public LocalDate getOrderDate() {
+        return this.orderDate;
+    }
+
+    public void setSpecialRequestAccepted(boolean accepted) {
+        this.specialRequestAccepted = accepted;
+    }
+
+    public String getSpecialRequest() {
+        return this.specialRequest;
     }
 }

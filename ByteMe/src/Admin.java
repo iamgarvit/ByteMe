@@ -1,3 +1,4 @@
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -5,6 +6,7 @@ public class Admin {
     private String username;
     private String password;
     private String name;
+    private static ArrayList<Order> allOrdersAdmin = new ArrayList<>();
     private static ArrayList<Admin> allAdmin = new ArrayList<>();
 
     public String getUsername() {
@@ -22,7 +24,7 @@ public class Admin {
         allAdmin.add(this);
     }
 
-    public void AdminSignUp(Scanner sc) {
+    public static void AdminSignUp(Scanner sc) {
         System.out.println("Enter username: ");
         String username = sc.nextLine();
         System.out.println("Enter password: ");
@@ -39,7 +41,7 @@ public class Admin {
         }
     }
 
-    public void adminLogin(String username, String password, Scanner sc) {
+    public static void adminLogin(String username, String password, Scanner sc) {
         Admin adminToLogin = findAdminByUsername(username);
         if (adminToLogin == null) {
             System.out.println("Admin with username: " + username + " does not exists.\n");
@@ -48,7 +50,7 @@ public class Admin {
 
         if ((username.equals(adminToLogin.getUsername())) && (password.equals(adminToLogin.getPassword()))) {
             System.out.println("Successfully logged in as: " + username + '\n');
-            displayAdminMenu(sc);
+            adminToLogin.displayAdminMenu(sc);
         }
         else {
             System.out.println("Login failed. Invalid credentials.\n");
@@ -62,7 +64,7 @@ public class Admin {
             System.out.println("Choose option: " + '\n' +
                     "1. Menu Management" + '\n' +
                     "2. Order Management" + '\n' +
-                    "3. Report Generation" + '\n' +
+                    "3. Generate today's report" + '\n' +
                     "4. Logout" + '\n');
             while (!sc.hasNextInt()) {
                 System.out.println("Invalid input. Please enter a number.\n");
@@ -76,10 +78,10 @@ public class Admin {
                     manageMenu(sc);
                     break;
                 case 2:
-                    //Order management
+                    displayAdminMenu(sc);
                     break;
                 case 3:
-                    //Report generation
+                    reportGeneration(sc);
                     break;
                 case 4:
                     System.out.println("Logging out.\n");
@@ -358,12 +360,229 @@ public class Admin {
         itemToUpdate.displayItemDetails();
     }
 
-    public Admin findAdminByUsername(String username) {
+    public static Admin findAdminByUsername(String username) {
         for (Admin admin : allAdmin) {
             if (username.equals(admin.getUsername())) {
                 return admin;
             }
         }
         return null;
+    }
+
+    private void manageOrder(Scanner sc) {
+        while (true) {
+            int choice = -1;
+            System.out.println("Choose option: " + '\n' +
+                               "1. View pending orders" + '\n' +
+                               "2. Update order status" + '\n' +
+                               "3. Process refunds" + '\n' +
+                               "4. Handle special requests" + '\n' +
+                               "5. Go back" + '\n');
+            while (!sc.hasNextInt()) {
+                System.out.println("Invalid input. Please enter a number.");
+                sc.nextLine();
+            }
+            choice = sc.nextInt();
+            sc.nextLine();
+
+            switch (choice) {
+                case 1:
+                    viewPendingOrder();
+                    break;
+                case 2:
+                    updateOrderStatus(sc);
+                    break;
+                case 3:
+                    System.out.println("All cancelled orders refunded successfully.");
+                    break;
+                case 4:
+                    handleSpecialRequest(sc);
+                    break;
+                case 5:
+                    return;
+                default:
+                    System.out.println("Invalid option.");
+                    break;
+            }
+        }
+    }
+
+    private void viewPendingOrder() {
+        if (allOrdersAdmin.isEmpty()) {
+            System.out.println("There are no orders.");
+            return;
+        }
+
+        int count = 0;
+        for (Order order : allOrdersAdmin) {
+            if (!((order.getOrderStatus().equals("Delivered")) || order.getOrderStatus().equals("Cancelled"))) {
+                order.displayOrderDetails();
+                count++;
+            }
+        }
+
+        if (count == 0) {
+            System.out.println("There are no pending orders.");
+        }
+    }
+
+    private void updateOrderStatus(Scanner sc) {
+        if (allOrdersAdmin.isEmpty()) {
+            System.out.println("There are no orders.");
+            return;
+        }
+
+        int orderID = -1;
+        System.out.println("Enter order ID: ");
+        while (!sc.hasNextInt()) {
+            System.out.println("Invalid input. Please enter a number.");
+            sc.nextLine();
+        }
+        orderID = sc.nextInt();
+        sc.nextLine();
+
+        Order orderToUpdate = null;
+        for (Order order : allOrdersAdmin) {
+            if (order.getOrderID() == orderID) {
+                orderToUpdate = order;
+                break;
+            }
+        }
+
+        if (orderToUpdate == null) {
+            System.out.println("Order with ID: " + orderID + " does not exist.");
+            return;
+        }
+
+        orderToUpdate.updateOrderStatus(sc);
+    }
+
+    private void handleSpecialRequest(Scanner sc) {
+        if (allOrdersAdmin.isEmpty()) {
+            System.out.println("There are no orders.");
+            return;
+        }
+
+        int orderID = -1;
+        System.out.println("Enter order ID: ");
+        while (!sc.hasNextInt()) {
+            System.out.println("Invalid input. Please enter a number.");
+            sc.nextLine();
+        }
+        orderID = sc.nextInt();
+        sc.nextLine();
+
+        Order orderToUpdate = null;
+        for (Order order : allOrdersAdmin) {
+            if (order.getOrderID() == orderID) {
+                orderToUpdate = order;
+                break;
+            }
+        }
+
+        if (orderToUpdate == null) {
+            System.out.println("Order with ID: " + orderID + " does not exist.");
+            return;
+        }
+
+        int specreq = -1;
+        System.out.println("Special request: " + orderToUpdate.getOrderStatus());
+        System.out.println("Is special request accepted:\n 1. Yes\n 2. No");
+
+        while (!sc.hasNextInt()) {
+            System.out.println("Invalid input. Please enter a number.");
+            sc.nextLine();
+        }
+        specreq = sc.nextInt();
+        sc.nextLine();
+
+        if (specreq == 1) {
+            orderToUpdate.setSpecialRequestAccepted(true);
+            System.out.println("Special request accepted.");
+            return;
+        }
+
+        System.out.println("Special request rejected.");
+    }
+
+    public static void addOrderToAdmin(Order order) {
+        allOrdersAdmin.add(order);
+    }
+
+    private void reportGeneration(Scanner sc) {
+        while (true) {
+            int choice = -1;
+            System.out.println("Choose options: " + '\n' +
+                               "1. Generate sales report" + '\n' +
+                               "2. View today's orders" + '\n' +
+                               "3. Go back" + '\n');
+            while (!sc.hasNextInt()) {
+                System.out.println("Invalid input. Please enter a number.");
+                sc.nextLine();
+            }
+            choice = sc.nextInt();
+            sc.nextLine();
+
+            switch (choice) {
+                case 1:
+                    dailySalesReport();
+                    break;
+                case 2:
+                    showTodayOrders();
+                    break;
+                case 3:
+                    return;
+                default:
+                    System.out.println("Invalid option.");
+                    break;
+            }
+        }
+    }
+
+    private void dailySalesReport() {
+        if (allOrdersAdmin.isEmpty()) {
+            System.out.println("There are no orders.");
+            return;
+        }
+
+        int count = 0;
+        float orderTotal = 0;
+        LocalDate todayDate = LocalDate.now();
+        for (Order order : allOrdersAdmin) {
+            if (order.getOrderDate() == todayDate) {
+                if (!order.getRefundStatus()) {
+                    orderTotal += order.getOrderTotal();
+                    count++;
+                }
+            }
+        }
+
+        if (count == 0) {
+            System.out.println("There are no orders today.");
+            return;
+        }
+
+        System.out.println("Total number of orders: " + count);
+        System.out.println("Total sales: " + orderTotal);
+    }
+
+    private void showTodayOrders() {
+        if (allOrdersAdmin.isEmpty()) {
+            System.out.println("There are no orders.");
+            return;
+        }
+
+        int count = 0;
+        LocalDate todayDate = LocalDate.now();
+        for (Order order : allOrdersAdmin) {
+            if (order.getOrderDate() == todayDate) {
+                order.displayOrderDetails();
+                count++;
+            }
+        }
+
+        if (count == 0) {
+            System.out.println("There are no orders today.");
+        }
     }
 }
