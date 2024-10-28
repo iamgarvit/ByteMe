@@ -25,6 +25,7 @@ public class Menu {
                 sc.nextLine();
             }
             choice = sc.nextInt();
+            sc.nextLine();
 
             switch (choice) {
                 case 1:
@@ -34,7 +35,7 @@ public class Menu {
                     searchInMenu(sc);
                     break;
                 case 3:
-                    //Filter by category
+                    filterByCategory(sc);
                     break;
                 case 4:
                     sortByPrice();
@@ -69,6 +70,44 @@ public class Menu {
             System.out.println("No items match your search.");
         }
         return;
+    }
+
+    private static void filterByCategory(Scanner sc) {
+        int choice = 0;
+        System.out.println("Choose category: " + '\n' +
+                           "1. Snack" + '\n' +
+                           "2. Meal" + '\n' +
+                           "3. Beverage");
+        while (!sc.hasNextInt()) {
+            System.out.println("Invalid input. Please enter a number.");
+            sc.nextLine();
+        }
+        choice = sc.nextInt();
+        sc.nextLine();
+
+        switch (choice) {
+            case 1:
+                ArrayList<MenuItem> snacks = MenuItem.getSnackItems();
+                for (MenuItem item : snacks) {
+                    displayItemDetails(item);
+                }
+                break;
+            case 2:
+                ArrayList<MenuItem> meals = MenuItem.getMealItems();
+                for (MenuItem item : meals) {
+                    displayItemDetails(item);
+                }
+                break;
+            case 3:
+                ArrayList<MenuItem> beverages = MenuItem.getBeverageItems();
+                for (MenuItem item : beverages) {
+                    displayItemDetails(item);
+                }
+                break;
+            default:
+                System.out.println("Invalid option");
+                break;
+        }
     }
 
     private static void sortByPrice() {

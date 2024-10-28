@@ -6,6 +6,9 @@ public class MenuItem {
     private float itemPrice;
     private boolean itemAvailability;
     private String itemCategory;
+    private static ArrayList<MenuItem> snackItems = new ArrayList<>();
+    private static ArrayList<MenuItem> mealItems = new ArrayList<>();
+    private static ArrayList<MenuItem> beverageItems = new ArrayList<>();
     private static ArrayList<MenuItem> allItems = new ArrayList<>();
 
     public MenuItem(String itemCode, String itemName, float itemPrice, boolean itemAvailability, String itemCategory) {
@@ -14,6 +17,17 @@ public class MenuItem {
         this.itemPrice = itemPrice;
         this.itemAvailability = itemAvailability;
         this.itemCategory = itemCategory;
+        switch (itemCategory) {
+            case "Snack":
+                snackItems.add(this);
+                break;
+            case "Meal":
+                mealItems.add(this);
+                break;
+            case "Beverage":
+                beverageItems.add(this);
+                break;
+        }
         allItems.add(this);
     }
 
@@ -81,6 +95,18 @@ public class MenuItem {
                            "Item price: " + this.itemPrice + '\n' +
                            "Item category: " + this.itemCategory + '\n' +
                            "Item availability: " + this.itemAvailability + '\n');
+    }
+
+    public static ArrayList<MenuItem> getSnackItems() {
+        return snackItems;
+    }
+
+    public static ArrayList<MenuItem> getMealItems() {
+        return mealItems;
+    }
+
+    public static ArrayList<MenuItem> getBeverageItems() {
+        return beverageItems;
     }
 
     public void removeItem() {
