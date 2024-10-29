@@ -1,6 +1,7 @@
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Scanner;
 import java.util.TreeMap;
 
@@ -23,7 +24,7 @@ public class Order {
         this.orderID = orderNumber;
         orderNumber++;
         this.customer = customer;
-        this.itemList = orderList;
+        this.itemList = new TreeMap<>(orderList);
         this.orderDate = LocalDate.now();
         this.orderPlaceTime = LocalTime.now();
         this.orderTotal = orderTotal;
@@ -36,6 +37,7 @@ public class Order {
 
     public void displayOrderDetails() {
         System.out.println("Customer name: " + customer.getName() + '\n' +
+                           "Order ID:" + orderID + '\n' +
                            "Order total: " + orderTotal + '\n' +
                            "Date: " + orderDate + '\n' +
                            "Time: " + orderPlaceTime + '\n' +
@@ -52,7 +54,7 @@ public class Order {
             return;
         }
         for (MenuItem item : itemList.keySet()) {
-            System.out.println(item.getItemName() + " : " + itemList.get(item) + '\n');
+            System.out.println(item.getItemName() + " : " + itemList.get(item));
         }
     }
 
@@ -70,7 +72,7 @@ public class Order {
         System.out.println("Choose status: " + '\n' +
                            "1. Cooking" + '\n' +
                            "2. Out for delivery" + '\n' +
-                           "3. Delivered" + '\n');
+                           "3. Delivered");
         while (!sc.hasNextInt()) {
             System.out.println("Invalid input. Please enter a number.");
             sc.nextLine();

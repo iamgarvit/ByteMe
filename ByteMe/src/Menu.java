@@ -10,6 +10,10 @@ public class Menu {
         allItemsMenu = MenuItem.getAllItems();
     }
 
+    public static void initialiseMenu(){
+        new Menu();
+    }
+
     public static void displayMenu(Scanner sc) {
         new Menu();
         while (true) {

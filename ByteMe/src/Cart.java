@@ -1,9 +1,10 @@
+import java.util.Comparator;
 import java.util.TreeMap;
 
 public class Cart {
     private float cartTotal;
     private Customer customer;
-    private TreeMap<MenuItem, Integer> cartList = new TreeMap<>();
+    private TreeMap<MenuItem, Integer> cartList = new TreeMap<>(Comparator.comparing(MenuItem::getItemCode));
 
     public Cart(Customer customer) {
         this.cartTotal = 0;
@@ -47,7 +48,7 @@ public class Cart {
             return;
         }
         for (MenuItem item : cartList.keySet()) {
-            System.out.println(item.getItemName() + " : " + cartList.get(item) + '\n');
+            System.out.println(item.getItemName() + " : " + cartList.get(item));
         }
     }
 

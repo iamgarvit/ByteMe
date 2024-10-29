@@ -18,6 +18,12 @@ public class Customer {
         allCustomers.add(this);
     }
 
+    static {
+        Customer newCustomer = new Customer("garvit@gmail.com","garvit123", "Garvit");
+    }
+
+    public static void initialiseCustomers() {}
+
     public String getName() {
         return this.name;
     }
@@ -124,7 +130,7 @@ public class Customer {
                                "5. View total" + '\n' +
                                "6. Clear cart" + '\n' +
                                "7. Place order" + '\n' +
-                               "8. Go back" + '\n');
+                               "8. Go back");
             while(!sc.hasNextInt()) {
                 System.out.println("Invalid input. Please enter a number.");
                 sc.nextLine();
@@ -180,7 +186,7 @@ public class Customer {
             System.out.println("Find item by: " + '\n' +
                     "1. Item Code" + '\n' +
                     "2. Item Name" + '\n' +
-                    "3. Go back" + '\n');
+                    "3. Go back");
 
             while(!sc.hasNextInt()) {
                 System.out.println("Invalid input. Please enter a number.");
@@ -429,7 +435,7 @@ public class Customer {
         }
 
         if (!orderToCancel.getOrderStatus().equals("Placed")) {
-            System.out.println("Order with ID: " + " is cooking and cannot be cancelled.");
+            System.out.println("Order with ID: " + orderID + " is cooking and cannot be cancelled.");
             return;
         }
 

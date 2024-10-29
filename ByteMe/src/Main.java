@@ -2,6 +2,11 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+        MenuItem.initialiseMenuItems();
+        Admin.initialiseAdmin();
+        Customer.initialiseCustomers();
+        Menu.initialiseMenu();
+
         Scanner sc = new Scanner(System.in);
         while (true) {
             int choice = -1;
@@ -91,6 +96,7 @@ public class Main {
                     String passwordAdmin = sc.nextLine();
 
                     Admin.adminLogin(usernameAdmin, passwordAdmin, sc);
+                    break;
                 case 3:
                     return;
                 default:

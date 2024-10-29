@@ -31,6 +31,17 @@ public class MenuItem {
         allItems.add(this);
     }
 
+    static {
+        MenuItem patty = new MenuItem("S001", "Aloo Patty", 20, true, "Snack");
+        MenuItem coke = new MenuItem("B001", "Coca cola", 20, true, "Beverage");
+        MenuItem coldCoffee = new MenuItem("B002", "Cold Coffee", 40, true, "Beverage");
+        MenuItem chowmein = new MenuItem("S002", "Chowmein", 45, true, "Snack");
+        MenuItem roti = new MenuItem("M001", "Roti", 5, true, "Meal");
+        MenuItem dalMakhani =  new MenuItem("M002", "Dal Makhani", 70, true, "Meal");
+    }
+
+    public static void initialiseMenuItems() {}
+
     public String getItemCode() {
         return this.itemCode;
     }

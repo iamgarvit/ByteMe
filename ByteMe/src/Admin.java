@@ -58,6 +58,12 @@ public class Admin {
         }
     }
 
+    static {
+        Admin newAdmin = new Admin("admin", "admin123", "Default Admin");
+    }
+
+    public static void initialiseAdmin() {}
+
     private void displayAdminMenu(Scanner sc) {
         while (true) {
             int choice = -1;
@@ -78,7 +84,7 @@ public class Admin {
                     manageMenu(sc);
                     break;
                 case 2:
-                    displayAdminMenu(sc);
+                    manageOrder(sc);
                     break;
                 case 3:
                     reportGeneration(sc);
@@ -549,7 +555,7 @@ public class Admin {
         float orderTotal = 0;
         LocalDate todayDate = LocalDate.now();
         for (Order order : allOrdersAdmin) {
-            if (order.getOrderDate() == todayDate) {
+            if (order.getOrderDate().equals(todayDate)) {
                 if (!order.getRefundStatus()) {
                     orderTotal += order.getOrderTotal();
                     count++;
@@ -575,7 +581,7 @@ public class Admin {
         int count = 0;
         LocalDate todayDate = LocalDate.now();
         for (Order order : allOrdersAdmin) {
-            if (order.getOrderDate() == todayDate) {
+            if (order.getOrderDate().equals(todayDate)) {
                 order.displayOrderDetails();
                 count++;
             }
