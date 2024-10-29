@@ -19,7 +19,7 @@ public class Customer {
     }
 
     static {
-        Customer newCustomer = new Customer("garvit@gmail.com","garvit123", "Garvit");
+        Customer newCustomer = new Customer("garvit","garvit123", "Garvit");
     }
 
     public static void initialiseCustomers() {}
@@ -206,6 +206,11 @@ public class Customer {
                         return;
                     }
 
+                    if (!itemToAdd.getItemAvailability()) {
+                        System.out.println("Item: " + itemToAdd.getItemName() + " is not available.");
+                        return;
+                    }
+
                     int quantity = 0;
                     System.out.println("Enter quantity: ");
 
@@ -349,7 +354,7 @@ public class Customer {
                                "1. Order status" + '\n' +
                                "2. Cancel order" + '\n' +
                                "3. Order History" + '\n' +
-                               "4. Go back" + '\n');
+                               "4. Go back");
             while (!sc.hasNextInt()) {
                 System.out.println("Invalid input. Please enter a number.");
                 sc.nextLine();

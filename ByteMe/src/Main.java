@@ -13,7 +13,7 @@ public class Main {
             System.out.println("Choose option: " + '\n' +
                                "1. Signup" + '\n' +
                                "2. Login" + '\n' +
-                               "3. Exit" + '\n');
+                               "3. Exit");
             while (!sc.hasNextInt()) {
                 System.out.println("Invalid input. Please enter a number");
                 sc.nextLine();
@@ -42,7 +42,7 @@ public class Main {
             System.out.println("Sign up as: " + '\n' +
                     "1. Customer" + '\n' +
                     "2. Admin" + '\n' +
-                    "3. Go back" + '\n');
+                    "3. Go back");
             while (!sc.hasNextInt()) {
                 System.out.println("Invalid input. Please enter a number");
                 sc.nextLine();
@@ -72,7 +72,7 @@ public class Main {
             System.out.println("Login as: " + '\n' +
                     "1. Customer" + '\n' +
                     "2. Admin" + '\n' +
-                    "3. Go back" + '\n');
+                    "3. Go back");
             while (!sc.hasNextInt()) {
                 System.out.println("Invalid input. Please enter a number");
                 sc.nextLine();

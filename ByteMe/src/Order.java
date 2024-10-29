@@ -6,7 +6,7 @@ import java.util.Scanner;
 import java.util.TreeMap;
 
 public class Order {
-    private static int orderNumber = 0;
+    private static int orderNumber = 1;
     private final int orderID;
     private String specialRequest;
     private boolean specialRequestAccepted;
@@ -81,11 +81,11 @@ public class Order {
         sc.nextLine();
 
         while (!((choice >= 1) && choice <=3)) {
+            System.out.println("Invalid input. Please enter a number b/w 1 and 3.");
             while (!sc.hasNextInt()) {
                 System.out.println("Invalid input. Please enter a number.");
                 sc.nextLine();
             }
-            System.out.println("Invalid input. Please enter a number b/w 1 and 3.");
             choice = sc.nextInt();
             sc.nextLine();
         }
@@ -93,12 +93,15 @@ public class Order {
         switch (choice) {
             case 1:
                 this.orderStatus = "Cooking";
+                System.out.println("Status updated: Cooking");
                 break;
             case 2:
                 this.orderStatus = "Out for delivery";
+                System.out.println("Status updated: Out for delivery");
                 break;
             case 3:
                 this.orderStatus = "Delivered";
+                System.out.println("Status updated: Delivered");
                 completeOrder();
                 break;
             default:

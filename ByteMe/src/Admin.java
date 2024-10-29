@@ -37,23 +37,23 @@ public class Admin {
             return;
         }
         else {
-            System.out.println("Admin already exists with username: " + username + '\n');
+            System.out.println("Admin already exists with username: " + username);
         }
     }
 
     public static void adminLogin(String username, String password, Scanner sc) {
         Admin adminToLogin = findAdminByUsername(username);
         if (adminToLogin == null) {
-            System.out.println("Admin with username: " + username + " does not exists.\n");
+            System.out.println("Admin with username: " + username + " does not exists.");
             return;
         }
 
         if ((username.equals(adminToLogin.getUsername())) && (password.equals(adminToLogin.getPassword()))) {
-            System.out.println("Successfully logged in as: " + username + '\n');
+            System.out.println("Successfully logged in as: " + username);
             adminToLogin.displayAdminMenu(sc);
         }
         else {
-            System.out.println("Login failed. Invalid credentials.\n");
+            System.out.println("Login failed. Invalid credentials.");
             return;
         }
     }
@@ -71,9 +71,9 @@ public class Admin {
                     "1. Menu Management" + '\n' +
                     "2. Order Management" + '\n' +
                     "3. Generate today's report" + '\n' +
-                    "4. Logout" + '\n');
+                    "4. Logout");
             while (!sc.hasNextInt()) {
-                System.out.println("Invalid input. Please enter a number.\n");
+                System.out.println("Invalid input. Please enter a number.");
                 sc.nextLine();
             }
             choice = sc.nextInt();
@@ -90,10 +90,10 @@ public class Admin {
                     reportGeneration(sc);
                     break;
                 case 4:
-                    System.out.println("Logging out.\n");
+                    System.out.println("Logging out.");
                     return;
                 default:
-                    System.out.println("Invalid option.\n");
+                    System.out.println("Invalid option.");
                     break;
             }
         }
@@ -109,9 +109,9 @@ public class Admin {
                                "4. Remove item" + '\n' +
                                "5. Modify Price" + '\n' +
                                "6. Update Availability" + '\n' +
-                               "7. Go back" + '\n');
+                               "7. Go back");
             while(!sc.hasNextInt()) {
-                System.out.println("Invalid input. Please enter a number.\n");
+                System.out.println("Invalid input. Please enter a number.");
                 sc.nextLine();
             }
             option = sc.nextInt();
@@ -137,10 +137,10 @@ public class Admin {
                     updateItemAvailability(sc);
                     break;
                 case 7:
-                    System.out.println("Returning to previous screen.\n");
+                    System.out.println("Returning to previous screen.");
                     return;
                 default:
-                    System.out.println("Invalid option.\n");
+                    System.out.println("Invalid option.");
                     break;
             }
         }
@@ -150,19 +150,26 @@ public class Admin {
         System.out.println("Enter item code: ");
         String itemCode = sc.nextLine();
 
+        for (MenuItem item : MenuItem.getAllItems()) {
+            if (itemCode.equals(item.getItemCode())) {
+                System.out.println("Item " + item.getItemCode() + " already exists.");
+                return;
+            }
+        }
+
         System.out.println("Enter item name: ");
         String itemName = sc.nextLine();
 
         System.out.println("Enter item price: ");
         while (!sc.hasNextFloat()) {
-            System.out.println("Price must be a float value.\n");
+            System.out.println("Price must be a float value.");
             sc.nextLine();
         }
         float itemPrice = sc.nextFloat();
 
-        System.out.println("Is the item available? \n1. Yes \n2. No\n");
+        System.out.println("Is the item available? \n1. Yes \n2. No");
         while (!sc.hasNextInt()) {
-            System.out.println("Invalid input. Enter a number.\n");
+            System.out.println("Invalid input. Enter a number.");
             sc.nextLine();
         }
         int availability = sc.nextInt();
@@ -170,9 +177,9 @@ public class Admin {
         boolean itemAvailability;
 
         while ((availability != 1) && (availability != 2)) {
-            System.out.println("Invalid input. Enter 1 for Yes and 2 for No.\n");
+            System.out.println("Invalid input. Enter 1 for Yes and 2 for No.");
             while (!sc.hasNextInt()) {
-                System.out.println("Invalid Input. Enter a number.\n");
+                System.out.println("Invalid Input. Enter a number.");
                 sc.nextLine();
             }
             availability = sc.nextInt();
@@ -184,9 +191,9 @@ public class Admin {
         System.out.println("Choose category: " + '\n' +
                            "1. Snack" + '\n' +
                            "2. Meal" + '\n' +
-                           "3. Beverage" + '\n');
+                           "3. Beverage");
         while (!sc.hasNextInt()) {
-            System.out.println("Invalid input. Enter a number.\n");
+            System.out.println("Invalid input. Enter a number.");
             sc.nextLine();
         }
         int category = sc.nextInt();
@@ -194,7 +201,7 @@ public class Admin {
         while (!((category <= 3) && (category >= 1))) {
             System.out.println("Input must be value b/w 1 and 3. Re enter input: ");
             while (!sc.hasNextInt()) {
-                System.out.println("Invalid input. Input must be an integer.\n");
+                System.out.println("Invalid input. Input must be an integer.");
                 sc.nextLine();
             }
             category = sc.nextInt();
@@ -212,7 +219,7 @@ public class Admin {
         }
 
         new MenuItem(itemCode, itemName, itemPrice, itemAvailability, itemCategory);
-        System.out.println("Item: " + itemName + " added successfully.\n");
+        System.out.println("Item: " + itemName + " added successfully.");
     }
 
     private void updateMenuItem(Scanner sc) {
@@ -227,7 +234,7 @@ public class Admin {
             System.out.println("Choose option: " + '\n' +
                                "1. Update Item Code" + '\n' +
                                "2. Update Item Name" + '\n' +
-                               "3. Go back" + '\n');
+                               "3. Go back");
             while (!sc.hasNextInt()) {
                 System.out.println("Invalid input. Enter a number.");
                 sc.nextLine();
@@ -251,7 +258,7 @@ public class Admin {
                     itemToUpdate.displayItemDetails();
                     break;
                 case 3:
-                    System.out.println("Going to previous screen.\n");
+                    System.out.println("Going to previous screen.");
                     return;
                 default:
                     System.out.println("Invalid option.");
@@ -267,10 +274,10 @@ public class Admin {
             return;
         }
 
-        System.out.println("Removing the item: \n");
+        System.out.println("Removing the item: ");
         itemToRemove.displayItemDetails();
         itemToRemove.removeItem();
-        System.out.println("Item removed successfully.\n");
+        System.out.println("Item removed successfully.");
     }
 
     private void modifyItemPrice(Scanner sc) {
@@ -299,7 +306,7 @@ public class Admin {
 
         itemToModify.setItemPrice(newPrice);
 
-        System.out.println("Price updated successfully.\n");
+        System.out.println("Price updated successfully.");
         itemToModify.displayItemDetails();
     }
 
@@ -308,7 +315,7 @@ public class Admin {
             int option = -1;
             System.out.println("Find item by: " + '\n' +
                                "1. Item Code" + '\n' +
-                               "2. Item Name" + '\n');
+                               "2. Item Name");
 
             while(!sc.hasNextInt()) {
                 System.out.println("Invalid input. Please enter a number.");
@@ -383,7 +390,7 @@ public class Admin {
                                "2. Update order status" + '\n' +
                                "3. Process refunds" + '\n' +
                                "4. Handle special requests" + '\n' +
-                               "5. Go back" + '\n');
+                               "5. Go back");
             while (!sc.hasNextInt()) {
                 System.out.println("Invalid input. Please enter a number.");
                 sc.nextLine();
@@ -521,7 +528,7 @@ public class Admin {
             System.out.println("Choose options: " + '\n' +
                                "1. Generate sales report" + '\n' +
                                "2. View today's orders" + '\n' +
-                               "3. Go back" + '\n');
+                               "3. Go back");
             while (!sc.hasNextInt()) {
                 System.out.println("Invalid input. Please enter a number.");
                 sc.nextLine();

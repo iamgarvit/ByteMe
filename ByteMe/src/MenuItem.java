@@ -38,6 +38,10 @@ public class MenuItem {
         MenuItem chowmein = new MenuItem("S002", "Chowmein", 45, true, "Snack");
         MenuItem roti = new MenuItem("M001", "Roti", 5, true, "Meal");
         MenuItem dalMakhani =  new MenuItem("M002", "Dal Makhani", 70, true, "Meal");
+        MenuItem paneerParatha = new MenuItem("M003", "Paner Paratha", 40, true, "Meal");
+        MenuItem mixParatha = new MenuItem("M004", "Mix Paratha", 30, true, "Meal");
+        MenuItem mountainDew = new MenuItem("B003", "Mountain Dew", 20, true, "Beverage");
+        MenuItem vegRoll = new MenuItem("S003", "Veg Roll", 40, true, "Snack");
     }
 
     public static void initialiseMenuItems() {}

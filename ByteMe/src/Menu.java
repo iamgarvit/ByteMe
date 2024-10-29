@@ -65,7 +65,7 @@ public class Menu {
         String inputText = sc.nextLine();
         int count = 0;
         for (MenuItem item : allItemsMenu) {
-            if (item.getItemName().contains(inputText)) {
+            if (item.getItemName().toLowerCase().contains(inputText.toLowerCase())) {
                 displayItemDetails(item);
                 count++;
             }
