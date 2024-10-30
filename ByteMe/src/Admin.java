@@ -1,12 +1,14 @@
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Scanner;
+import java.util.TreeMap;
 
 public class Admin {
     private String username;
     private String password;
     private String name;
-    private static ArrayList<Order> allOrdersAdmin = new ArrayList<>();
+    private static TreeMap<Order, Integer> allOrdersAdmin = new TreeMap<>(Comparator.comparing(Order::getOrderID));
     private static ArrayList<Admin> allAdmin = new ArrayList<>();
 
     public String getUsername() {
@@ -276,6 +278,7 @@ public class Admin {
 
         System.out.println("Removing the item: ");
         itemToRemove.displayItemDetails();
+        updateOrdersAfterAvailability(itemToRemove);
         itemToRemove.removeItem();
         System.out.println("Item removed successfully.");
     }
@@ -369,8 +372,23 @@ public class Admin {
 
         itemAvailability = (availability == 1);
         itemToUpdate.setItemAvailability(itemAvailability);
+
+        if (!itemAvailability) {
+            updateOrdersAfterAvailability(itemToUpdate);
+        }
+
         System.out.println("Item availability updated successfully.");
         itemToUpdate.displayItemDetails();
+    }
+
+    private void updateOrdersAfterAvailability(MenuItem itemToUpdate) {
+        for (Order order : allOrdersAdmin.keySet()) {
+            if (!((order.getOrderStatus().equals("Delivered")) || order.getOrderStatus().equals("Cancelled"))) {
+                if (order.getItems().contains(itemToUpdate)) {
+                    order.cancelOrder();
+                }
+            }
+        }
     }
 
     public static Admin findAdminByUsername(String username) {
@@ -427,10 +445,21 @@ public class Admin {
         }
 
         int count = 0;
-        for (Order order : allOrdersAdmin) {
+        for (Order order : allOrdersAdmin.keySet()) {
             if (!((order.getOrderStatus().equals("Delivered")) || order.getOrderStatus().equals("Cancelled"))) {
-                order.displayOrderDetails();
-                count++;
+                if (order.getVIPStatus()) {
+                    order.displayOrderDetails();
+                    count++;
+                }
+            }
+        }
+
+        for (Order order : allOrdersAdmin.keySet()) {
+            if (!((order.getOrderStatus().equals("Delivered")) || order.getOrderStatus().equals("Cancelled"))) {
+                if (!order.getVIPStatus()) {
+                    order.displayOrderDetails();
+                    count++;
+                }
             }
         }
 
@@ -455,7 +484,7 @@ public class Admin {
         sc.nextLine();
 
         Order orderToUpdate = null;
-        for (Order order : allOrdersAdmin) {
+        for (Order order : allOrdersAdmin.keySet()) {
             if (order.getOrderID() == orderID) {
                 orderToUpdate = order;
                 break;
@@ -486,7 +515,7 @@ public class Admin {
         sc.nextLine();
 
         Order orderToUpdate = null;
-        for (Order order : allOrdersAdmin) {
+        for (Order order : allOrdersAdmin.keySet()) {
             if (order.getOrderID() == orderID) {
                 orderToUpdate = order;
                 break;
@@ -519,7 +548,7 @@ public class Admin {
     }
 
     public static void addOrderToAdmin(Order order) {
-        allOrdersAdmin.add(order);
+        allOrdersAdmin.put(order, order.getOrderID());
     }
 
     private void reportGeneration(Scanner sc) {
@@ -561,7 +590,7 @@ public class Admin {
         int count = 0;
         float orderTotal = 0;
         LocalDate todayDate = LocalDate.now();
-        for (Order order : allOrdersAdmin) {
+        for (Order order : allOrdersAdmin.keySet()) {
             if (order.getOrderDate().equals(todayDate)) {
                 if (!order.getRefundStatus()) {
                     orderTotal += order.getOrderTotal();
@@ -587,7 +616,7 @@ public class Admin {
 
         int count = 0;
         LocalDate todayDate = LocalDate.now();
-        for (Order order : allOrdersAdmin) {
+        for (Order order : allOrdersAdmin.keySet()) {
             if (order.getOrderDate().equals(todayDate)) {
                 order.displayOrderDetails();
                 count++;

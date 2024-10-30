@@ -1,5 +1,4 @@
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.*;
 
 public class Customer {
     private String username;
@@ -7,19 +6,25 @@ public class Customer {
     private String name;
     private Scanner sc;
     private Cart currentCart;
+    private boolean vip;
     private ArrayList<Order> allOrders = new ArrayList<>();
+    private Set<MenuItem> orderedMenuItems = new HashSet<>();
+    private ArrayList<Review> customerReviews = new ArrayList<>();
     public static ArrayList<Customer> allCustomers = new ArrayList<>();
 
     public Customer(String username, String password, String name) {
         this.username = username;
         this.password = password;
         this.name = name;
+        this.vip = false;
         this.currentCart = new Cart(this);
         allCustomers.add(this);
     }
 
     static {
         Customer newCustomer = new Customer("garvit","garvit123", "Garvit");
+        Customer newCustomer2 = new Customer("shivansh","shivansh123", "Shivansh");
+        Customer newCustomer3 = new Customer("parth", "parth123", "Parth");
     }
 
     public static void initialiseCustomers() {}
@@ -81,7 +86,9 @@ public class Customer {
                     "1. Menu view" + '\n' +
                     "2. Cart View" + '\n' +
                     "3. Order View" + '\n' +
-                    "4. Logout");
+                    "4. Become VIP" + '\n' +
+                    "5. Review" + '\n' +
+                    "6. Logout");
 
             while (!sc.hasNextInt()) {
                 System.out.println("Invalid input. Please enter a number.");
@@ -101,6 +108,22 @@ public class Customer {
                     displayOrderMenu(sc);
                     break;
                 case 4:
+                    if (vip) {
+                        System.out.println("You're already a VIP customer.");
+                        break;
+                    }
+                    if (payment(sc)) {
+                        vip = true;
+                        System.out.println("Congratulations on becoming a VIP customer.");
+                    }
+                    else {
+                        System.out.println("Payment unsuccessful. VIP status not updated.");
+                    }
+                    break;
+                case 5:
+                    review(sc);
+                    break;
+                case 6:
                     System.out.println("Successfully logged out.");
                     return;
                 default:
@@ -164,8 +187,18 @@ public class Customer {
                     }
                     System.out.println("Kindly enter special requests if any: ");
                     String specialReq = sc.nextLine();
-                    currentCart.placeOrder(specialReq);
-                    System.out.println("Order placed successfully. Use cash or UPI on delivery.");
+                    System.out.println("Enter address: ");
+                    String address = sc.nextLine();
+                    if (payment(sc)) {
+                        for (MenuItem item : currentCart.getCartList().keySet()) {
+                            orderedMenuItems.add(item);
+                        }
+                        currentCart.placeOrder(specialReq, address);
+                        System.out.println("Order placed successfully.");
+                    }
+                    else {
+                        System.out.println("Payment failed. Order not placed.");
+                    }
                     break;
                 case 8:
                     return;
@@ -446,5 +479,129 @@ public class Customer {
 
         orderToCancel.cancelOrder();
         System.out.println("Order cancelled successfully. Your amount will be refunded if deducted.");
+    }
+
+    private boolean payment(Scanner sc) {
+        while (true) {
+            int choice = -1;
+            System.out.println("Choose payment method: " + '\n' +
+                               "1. UPI" + '\n' +
+                               "2. Card" + '\n' +
+                               "3. Go back");
+            while (!sc.hasNextInt()) {
+                System.out.println("Invalid input. Please enter a number.");
+                sc.nextLine();
+            }
+            choice = sc.nextInt();
+            sc.nextLine();
+
+            switch (choice) {
+                case 1, 2:
+                    System.out.println("Payment successful.");
+                    return true;
+                case 3:
+                    return false;
+                default:
+                    System.out.println("Invalid option.");
+                    break;
+            }
+        }
+    }
+
+    public boolean getVIPStatus() {
+        return this.vip;
+    }
+
+    private void review(Scanner sc) {
+        while (true) {
+            int choice = -1;
+            System.out.println("Choose option: " + '\n' +
+                               "1. View item review" + '\n' +
+                               "2. View submitted reviews" + '\n' +
+                               "3. Add review" + '\n' +
+                               "4. Go back");
+            while (!sc.hasNextInt()) {
+                System.out.println("Invalid input. Please enter a number.");
+                sc.nextLine();
+            }
+            choice = sc.nextInt();
+            sc.nextLine();
+
+            switch (choice) {
+                case 1:
+                    viewReview(sc);
+                    break;
+                case 2:
+                    viewSubmittedReviews();
+                    break;
+                case 3:
+                    addReview(sc);
+                    break;
+                case 4:
+                    return;
+                default:
+                    System.out.println("Invalid option.");
+                    break;
+            }
+        }
+    }
+
+    private void viewReview(Scanner sc) {
+        System.out.println("Enter item code: ");
+        String itemCodeInput = sc.nextLine();
+        MenuItem item = MenuItem.findItemByCode(itemCodeInput);
+
+        if (item == null) {
+            System.out.println("Item: " + itemCodeInput + " does not exist.");
+            return;
+        }
+
+        item.displayItemReviews();
+    }
+
+    private void viewSubmittedReviews() {
+        if (customerReviews.isEmpty()) {
+            System.out.println("You've not reviewed any items.");
+            return;
+        }
+
+        for (Review review : customerReviews) {
+            System.out.println("Item name: " + review.getItem().getItemName() + '\n' +
+                               "Review: " + review.getReview() + '\n');
+        }
+    }
+
+    private void addReview(Scanner sc) {
+        if (orderedMenuItems.isEmpty()) {
+            System.out.println("No items ordered yet.");
+            return;
+        }
+
+        for (MenuItem item : orderedMenuItems) {
+            System.out.println("Item code: " + item.getItemCode() + "Item name: " + item.getItemName());
+        }
+
+        System.out.println("Enter the item code: ");
+        String itemCodeInput = sc.nextLine();
+
+        MenuItem itemToReview = null;
+        for (MenuItem item : orderedMenuItems) {
+            if (item.getItemCode().equals(itemCodeInput)) {
+                itemToReview = item;
+                break;
+            }
+        }
+
+        if (itemToReview == null) {
+            System.out.println("Item: " + itemCodeInput + " is not ordered by you.");
+            return;
+        }
+
+        System.out.println("Enter your review: ");
+        String reviewInput = sc.nextLine();
+        Review newReview = new Review(this, reviewInput, itemToReview);
+        customerReviews.add(newReview);
+        itemToReview.addItemReview(newReview);
+        System.out.println("Review submitted: " + reviewInput);
     }
 }

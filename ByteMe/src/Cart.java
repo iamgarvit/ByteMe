@@ -27,8 +27,8 @@ public class Cart {
         cartList.remove(item);
     }
 
-    public void placeOrder(String specialRequest) {
-        Order orderToPlace = new Order(cartList, customer, cartTotal, specialRequest);
+    public void placeOrder(String specialRequest, String address) {
+        Order orderToPlace = new Order(cartList, customer, cartTotal, specialRequest, customer.getVIPStatus(), address);
         customer.addOrder(orderToPlace);
         Admin.addOrderToAdmin(orderToPlace);
         clearCart();
@@ -36,6 +36,7 @@ public class Cart {
 
     public void clearCart() {
         cartList.clear();
+        cartTotal = 0;
     }
 
     public boolean isCartEmpty() {

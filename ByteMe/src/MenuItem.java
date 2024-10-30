@@ -6,6 +6,7 @@ public class MenuItem {
     private float itemPrice;
     private boolean itemAvailability;
     private String itemCategory;
+    private ArrayList<Review> itemReviews;
     private static ArrayList<MenuItem> snackItems = new ArrayList<>();
     private static ArrayList<MenuItem> mealItems = new ArrayList<>();
     private static ArrayList<MenuItem> beverageItems = new ArrayList<>();
@@ -126,5 +127,22 @@ public class MenuItem {
 
     public void removeItem() {
         allItems.remove(this);
+    }
+
+    public void addItemReview(Review review) {
+        itemReviews.add(review);
+    }
+
+    public void displayItemReviews() {
+        if (itemReviews.isEmpty()) {
+            System.out.println("No reviews available.");
+            return;
+        }
+
+        for (Review review : itemReviews) {
+            System.out.println("Customer: " + review.getCustomer().getName() + '\n' +
+                               "Item name: " + review.getItem().getItemName() + '\n' +
+                               "Review: " + review.getReview() + '\n');
+        }
     }
 }

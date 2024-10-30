@@ -1,9 +1,6 @@
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Scanner;
-import java.util.TreeMap;
+import java.util.*;
 
 public class Order {
     private static int orderNumber = 1;
@@ -18,9 +15,11 @@ public class Order {
     private String orderStatus;
     private float orderTotal;
     private boolean isRefunded;
-    private static ArrayList<Order> allOrders = new ArrayList<>();
+    private boolean vip;
+    private String address;
+    private static TreeMap<Order, Integer> allOrders = new TreeMap<>(Comparator.comparing(Order::getOrderID));
 
-    public Order(TreeMap<MenuItem, Integer> orderList, Customer customer, float orderTotal, String specialRequest) {
+    public Order(TreeMap<MenuItem, Integer> orderList, Customer customer, float orderTotal, String specialRequest, boolean vip, String address) {
         this.orderID = orderNumber;
         orderNumber++;
         this.customer = customer;
@@ -32,20 +31,25 @@ public class Order {
         this.orderStatus = "Placed";
         this.specialRequest = specialRequest;
         this.specialRequestAccepted = false;
-        allOrders.add(this);
+        this.vip = vip;
+        this.address = address;
+        allOrders.put(this, this.orderID);
     }
 
     public void displayOrderDetails() {
         System.out.println("Customer name: " + customer.getName() + '\n' +
-                           "Order ID:" + orderID + '\n' +
+                           "VIP: " + customer.getVIPStatus() + '\n' +
+                           "Order ID: " + orderID + '\n' +
                            "Order total: " + orderTotal + '\n' +
                            "Date: " + orderDate + '\n' +
                            "Time: " + orderPlaceTime + '\n' +
                            "Delivered at: " + orderCompleteTime + '\n' +
                            "Special request: " + specialRequest + '\n' +
                            "Special request accepted: " + specialRequestAccepted + '\n' +
+                           "Address: " + address + '\n' +
                            "Items: " );
         displayItemList();
+        System.out.println();
     }
 
     private void displayItemList() {
@@ -59,7 +63,7 @@ public class Order {
     }
 
     public Order findOrderByID(int orderIDSearch) {
-        for (Order order : allOrders) {
+        for (Order order : allOrders.keySet()) {
             if (order.orderID == orderIDSearch) {
                 return order;
             }
@@ -143,7 +147,19 @@ public class Order {
         this.specialRequestAccepted = accepted;
     }
 
+    public boolean getVIPStatus() {
+        return this.vip;
+    }
+
     public String getSpecialRequest() {
         return this.specialRequest;
+    }
+
+    public String getAddress() {
+        return this.address;
+    }
+
+    public Set<MenuItem> getItems() {
+        return this.itemList.keySet();
     }
 }
