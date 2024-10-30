@@ -43,6 +43,7 @@ public class Order {
                            "Order total: " + orderTotal + '\n' +
                            "Date: " + orderDate + '\n' +
                            "Time: " + orderPlaceTime + '\n' +
+                           "Status: " + orderStatus + '\n' +
                            "Delivered at: " + orderCompleteTime + '\n' +
                            "Special request: " + specialRequest + '\n' +
                            "Special request accepted: " + specialRequestAccepted + '\n' +
@@ -114,7 +115,7 @@ public class Order {
     }
 
     public void cancelOrder() {
-        this.orderStatus = "Canceled";
+        this.orderStatus = "Cancelled";
         this.orderCompleteTime = LocalTime.now();
         this.isRefunded = true;
     }

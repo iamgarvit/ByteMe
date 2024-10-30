@@ -6,7 +6,7 @@ public class MenuItem {
     private float itemPrice;
     private boolean itemAvailability;
     private String itemCategory;
-    private ArrayList<Review> itemReviews;
+    private ArrayList<Review> itemReviews = new ArrayList<>();
     private static ArrayList<MenuItem> snackItems = new ArrayList<>();
     private static ArrayList<MenuItem> mealItems = new ArrayList<>();
     private static ArrayList<MenuItem> beverageItems = new ArrayList<>();

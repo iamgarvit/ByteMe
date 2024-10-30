@@ -14,14 +14,14 @@ public class Review {
     }
 
     public Customer getCustomer() {
-        return customer;
+        return this.customer;
     }
 
     public String getReview() {
-        return review;
+        return this.review;
     }
 
     public MenuItem getItem() {
-        return item;
+        return this.item;
     }
 }

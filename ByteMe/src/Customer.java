@@ -578,7 +578,7 @@ public class Customer {
         }
 
         for (MenuItem item : orderedMenuItems) {
-            System.out.println("Item code: " + item.getItemCode() + "Item name: " + item.getItemName());
+            System.out.println("Item code: " + item.getItemCode() + " Item name: " + item.getItemName());
         }
 
         System.out.println("Enter the item code: ");
