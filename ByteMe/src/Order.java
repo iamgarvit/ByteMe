@@ -1,3 +1,5 @@
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
@@ -111,6 +113,35 @@ public class Order {
                 break;
             default:
                 break;
+        }
+    }
+
+    public void writeOrder() throws IOException {
+        try {
+            FileWriter filewriter = new FileWriter("orderHistory.txt", true);
+
+            filewriter.write(customer.getUsername() + '\n' +
+                               customer.getVIPStatus() + '\n' +
+                               orderID + '\n' +
+                               orderTotal + '\n' +
+                               orderDate + '\n' +
+                               orderPlaceTime + '\n' +
+                               orderStatus + '\n' +
+                               orderCompleteTime + '\n' +
+                               specialRequest + '\n' +
+                               specialRequestAccepted + '\n' +
+                               address + '\n');
+
+            for (MenuItem item : itemList.keySet()) {
+                filewriter.write(item.getItemName() + ':' + itemList.get(item));
+            }
+
+            filewriter.write("XOXOXOXO");
+
+            filewriter.close();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

@@ -1,8 +1,9 @@
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Scanner;
-import java.util.TreeMap;
+import java.util.*;
 
 public class Admin {
     private String username;
@@ -19,14 +20,15 @@ public class Admin {
         return this.password;
     }
 
-    public Admin(String username, String password, String name) {
+    public Admin(String username, String password, String name) throws IOException {
         this.username = username;
         this.password = password;
         this.name = name;
+        this.adminData();
         allAdmin.add(this);
     }
 
-    public static void AdminSignUp(Scanner sc) {
+    public static void AdminSignUp(Scanner sc) throws IOException {
         System.out.println("Enter username: ");
         String username = sc.nextLine();
         System.out.println("Enter password: ");
@@ -43,8 +45,19 @@ public class Admin {
         }
     }
 
-    public static void adminLogin(String username, String password, Scanner sc) {
-        Admin adminToLogin = findAdminByUsername(username);
+    private void adminData() throws IOException{
+        try {
+            FileWriter fw = new FileWriter("adminData.txt", true);
+            fw.write(username + "--" + password + "--" + name);
+            fw.close();
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void adminLogin(String username, String password, Scanner sc) throws IOException {
+        /*Admin adminToLogin = findAdminByUsername(username);
         if (adminToLogin == null) {
             System.out.println("Admin with username: " + username + " does not exists.");
             return;
@@ -57,11 +70,40 @@ public class Admin {
         else {
             System.out.println("Login failed. Invalid credentials.");
             return;
+        }*/
+        try {
+            List<String> allAdminData = Files.readAllLines(Paths.get("adminData.txt"));
+
+            for (String adminDataTemp : allAdminData) {
+                String[] adminData = adminDataTemp.split("--");
+                if (adminData[0].equals(username)) {
+                    if (adminData[1].equals(password)) {
+                        Admin adminTologin = findAdminByUsername(username);
+                        System.out.println("Login successful.");
+                        adminTologin.displayAdminMenu(sc);
+                        return;
+                    }
+                    else {
+                        System.out.println("Login unsuccessful. Invalid credentials.");
+                        return;
+                    }
+                }
+            }
+
+            System.out.println("Username: " + username + "not found.");
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
     static {
-        Admin newAdmin = new Admin("admin", "admin123", "Default Admin");
+        try {
+            Admin newAdmin = new Admin("admin", "admin123", "Default Admin");
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static void initialiseAdmin() {}

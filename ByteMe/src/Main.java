@@ -1,7 +1,8 @@
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         MenuItem.initialiseMenuItems();
         Admin.initialiseAdmin();
         Customer.initialiseCustomers();
@@ -36,7 +37,7 @@ public class Main {
         }
     }
 
-    public static void signUp(Scanner sc) {
+    public static void signUp(Scanner sc) throws IOException {
         while (true) {
             int choice = -1;
             System.out.println("Sign up as: " + '\n' +
@@ -66,7 +67,7 @@ public class Main {
         }
     }
 
-    public static void login(Scanner sc) {
+    public static void login(Scanner sc) throws IOException {
         while (true) {
             int choice = -1;
             System.out.println("Login as: " + '\n' +

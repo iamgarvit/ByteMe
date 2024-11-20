@@ -1,3 +1,7 @@
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class Customer {
@@ -12,19 +16,46 @@ public class Customer {
     private ArrayList<Review> customerReviews = new ArrayList<>();
     public static ArrayList<Customer> allCustomers = new ArrayList<>();
 
-    public Customer(String username, String password, String name) {
+    public Customer(String username, String password, String name) throws IOException {
         this.username = username;
         this.password = password;
         this.name = name;
         this.vip = false;
         this.currentCart = new Cart(this);
+        this.customerData();
         allCustomers.add(this);
     }
 
+    private void customerData() throws IOException {
+        try {
+            FileWriter fw = new FileWriter("customerData.txt", true);
+            fw.write(username + "--" + password + "--" + name);
+            fw.close();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     static {
-        Customer newCustomer = new Customer("garvit","garvit123", "Garvit");
-        Customer newCustomer2 = new Customer("shivansh","shivansh123", "Shivansh");
-        Customer newCustomer3 = new Customer("parth", "parth123", "Parth");
+        try {
+            Customer newCustomer = new Customer("garvit","garvit123", "Garvit");
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            Customer newCustomer2 = new Customer("shivansh","shivansh123", "Shivansh");
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            Customer newCustomer3 = new Customer("parth", "parth123", "Parth");
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static void initialiseCustomers() {}
@@ -45,7 +76,7 @@ public class Customer {
         this.password = newPassword;
     }
 
-    public static void customerSignup(Scanner sc) {
+    public static void customerSignup(Scanner sc) throws IOException {
         System.out.println("Enter username: ");
         String username = sc.nextLine();
         System.out.println("Enter password: ");
@@ -62,8 +93,8 @@ public class Customer {
         System.out.println("Username already exists.");
     }
 
-    public static void customerLogin(String username, String password, Scanner sc) {
-        Customer customerToLogin = findCustomerByUsername(username);
+    public static void customerLogin(String username, String password, Scanner sc) throws IOException {
+        /*Customer customerToLogin = findCustomerByUsername(username);
         if (customerToLogin == null) {
             System.out.println("Customer with username: " + username + " does not exist.");
             return;
@@ -76,6 +107,30 @@ public class Customer {
         else {
             System.out.println("Login unsuccessful. Invalid credentials.");
             return;
+        }*/
+        try {
+            List<String> allCustomersData = Files.readAllLines(Paths.get("customerData.txt"));
+
+            for (String customerDataTemp : allCustomersData) {
+                String[] customerData = customerDataTemp.split("--");
+                if (customerData[0].equals(username)) {
+                    if (customerData[1].equals(password)) {
+                        Customer customerToLogin = findCustomerByUsername(username);
+                        System.out.println("Login successful.");
+                        customerToLogin.displayCustomerMenu(sc);
+                        return;
+                    }
+                    else {
+                        System.out.println("Login unsuccessful. Invalid credentials.");
+                        return;
+                    }
+                }
+            }
+
+            System.out.println("Username: " + username + "not found.");
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
