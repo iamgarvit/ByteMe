@@ -22,19 +22,19 @@ public class Customer {
         this.name = name;
         this.vip = false;
         this.currentCart = new Cart(this);
-        this.customerData();
-        allCustomers.add(this);
+        try {
+            this.customerData();
+            allCustomers.add(this);
+        }
+        catch (Exception e) {
+            System.out.println("Error in signing up. Please try again.");
+        }
     }
 
     private void customerData() throws IOException {
-        try {
             FileWriter fw = new FileWriter("customerData.txt", true);
             fw.write(username + "--" + password + "--" + name + '\n');
             fw.close();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     static {
@@ -130,7 +130,7 @@ public class Customer {
             System.out.println("Username: " + username + "not found.");
         }
         catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("Unable to login. Please try again.");
         }
     }
 

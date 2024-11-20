@@ -186,7 +186,7 @@ public class Order {
                                    "Order Status: " + orderStatus + '\n' +
                                    "Order Complete Time: " + orderCompleteTime + '\n' +
                                    "Special Request: " + specialRequest + " Accepted: " + specialRequestAccepted + '\n' +
-                                   "Address: " + address + '\n');
+                                   "Address: " + address);
 
                 x = ind;
                 while (ind < allOders.size() && !allOders.get(ind).equals("XOXOXOXO")) {
@@ -198,11 +198,22 @@ public class Order {
                 }
 
                 ind++;
+                System.out.println("\n---------------------------\n");
             }
         }
         catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("Unable to get your order details right now.");
         }
+    }
+
+    public static ArrayList<Order> getPendingOrders() {
+        ArrayList<Order> pendingOrders = new ArrayList<>();
+        for (Order order : allOrders.keySet()) {
+            if (!order.getOrderStatus().equals("Delivered") || !order.getOrderStatus().equals("Cancelled")) {
+                pendingOrders.add(order);
+            }
+        }
+        return pendingOrders;
     }
 
     public void cancelOrder() throws IOException {
@@ -254,5 +265,9 @@ public class Order {
 
     public Set<MenuItem> getItems() {
         return this.itemList.keySet();
+    }
+
+    public TreeMap<MenuItem, Integer> getItemList() {
+        return this.itemList;
     }
 }

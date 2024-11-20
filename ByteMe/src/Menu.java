@@ -1,3 +1,6 @@
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -12,6 +15,27 @@ public class Menu {
 
     public static void initialiseMenu(){
         new Menu();
+    }
+
+    public static void GUIMenuDisplay() {
+        new Menu();
+        JFrame frame = new JFrame();
+        frame.setTitle("Menu");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(500, 500);
+        frame.setLayout(new BorderLayout());
+
+        String[] titles = {"Item ID", "Item Name", "Item Price", "Item Availability"};
+        DefaultTableModel menu = new DefaultTableModel(titles, 0);
+        JTable table = new JTable(menu);
+
+        for (MenuItem item : allItemsMenu) {
+            menu.addRow(new Object[]{item.getItemCode(), item.getItemName(), item.getItemPrice(), item.getItemAvailability()});
+        }
+
+        JScrollPane scrollPane = new JScrollPane(table);
+        frame.add(scrollPane, BorderLayout.CENTER);
+        frame.setVisible(true);
     }
 
     public static void displayMenu(Scanner sc) {
@@ -33,7 +57,7 @@ public class Menu {
 
             switch (choice) {
                 case 1:
-                    displayFullMenu();
+                    GUIMenuDisplay();
                     break;
                 case 2:
                     searchInMenu(sc);

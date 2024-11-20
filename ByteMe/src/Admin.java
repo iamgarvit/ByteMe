@@ -1,9 +1,13 @@
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.List;
 
 public class Admin {
     private String username;
@@ -11,6 +15,7 @@ public class Admin {
     private String name;
     private static TreeMap<Order, Integer> allOrdersAdmin = new TreeMap<>(Comparator.comparing(Order::getOrderID));
     private static ArrayList<Admin> allAdmin = new ArrayList<>();
+    private static ArrayList<Order> pendingOrders = new ArrayList<>();
 
     public String getUsername() {
         return this.username;
@@ -24,8 +29,13 @@ public class Admin {
         this.username = username;
         this.password = password;
         this.name = name;
-        this.adminData();
-        allAdmin.add(this);
+        try {
+            this.adminData();
+            allAdmin.add(this);
+        }
+        catch (IOException e) {
+            System.out.println("Error in signing up. Please try again.");
+        }
     }
 
     public static void AdminSignUp(Scanner sc) throws IOException {
@@ -46,14 +56,9 @@ public class Admin {
     }
 
     private void adminData() throws IOException{
-        try {
-            FileWriter fw = new FileWriter("adminData.txt", true);
-            fw.write(username + "--" + password + "--" + name + '\n');
-            fw.close();
-        }
-        catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        FileWriter fw = new FileWriter("adminData.txt", true);
+        fw.write(username + "--" + password + "--" + name + '\n');
+        fw.close();
     }
 
     public static void adminLogin(String username, String password, Scanner sc) throws IOException {
@@ -93,7 +98,7 @@ public class Admin {
             System.out.println("Username: " + username + "not found.");
         }
         catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("Unable to login. Please try again.");
         }
     }
 
@@ -163,7 +168,7 @@ public class Admin {
 
             switch (option) {
                 case 1:
-                    Menu.displayFullMenu();
+                    Menu.GUIMenuDisplay();
                     break;
                 case 2:
                     addMenuItem(sc);
@@ -481,7 +486,7 @@ public class Admin {
     }
 
     private void viewPendingOrder() {
-        if (allOrdersAdmin.isEmpty()) {
+        /*if (allOrdersAdmin.isEmpty()) {
             System.out.println("There are no orders.");
             return;
         }
@@ -507,7 +512,34 @@ public class Admin {
 
         if (count == 0) {
             System.out.println("There are no pending orders.");
+        }*/
+        pendingOrders = Order.getPendingOrders();
+        if (pendingOrders.isEmpty()) {
+            System.out.println("No pending orders.");
+            return;
         }
+        JFrame frame = new JFrame("Pending Orders");
+        frame.setTitle("Pending Orders");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setSize(500, 500);
+        frame.setLayout(new BorderLayout());
+
+        String[] titles = {"Order ID", "Items", "Order Status"};
+        DefaultTableModel pendingOrderTable = new DefaultTableModel(titles, 0);
+        JTable table = new JTable(pendingOrderTable);
+
+        for (Order order : pendingOrders) {
+            TreeMap<MenuItem, Integer> allItems = order.getItemList();
+            String items = "";
+            for (MenuItem item : allItems.keySet()) {
+                items = items + item.getItemName() + " : " + allItems.get(item) + ", ";
+            }
+            pendingOrderTable.addRow(new Object[]{order.getOrderID(), items, order.getOrderStatus()});
+        }
+
+        JScrollPane scrollPane = new JScrollPane(table);
+        frame.add(scrollPane, BorderLayout.CENTER);
+        frame.setVisible(true);
     }
 
     private void updateOrderStatus(Scanner sc) throws IOException {
