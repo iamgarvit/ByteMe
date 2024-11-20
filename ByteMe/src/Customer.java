@@ -29,7 +29,7 @@ public class Customer {
     private void customerData() throws IOException {
         try {
             FileWriter fw = new FileWriter("customerData.txt", true);
-            fw.write(username + "--" + password + "--" + name);
+            fw.write(username + "--" + password + "--" + name + '\n');
             fw.close();
         }
         catch (IOException e) {
@@ -134,7 +134,7 @@ public class Customer {
         }
     }
 
-    private void displayCustomerMenu(Scanner sc) {
+    private void displayCustomerMenu(Scanner sc) throws IOException {
         while (true) {
             int choice = -1;
             System.out.println("Choose option:" + '\n' +
@@ -435,7 +435,7 @@ public class Customer {
         currentCart.removeItem(itemToRemove);
     }
 
-    private void displayOrderMenu(Scanner sc) {
+    private void displayOrderMenu(Scanner sc) throws IOException {
         while (true) {
             int choice = -1;
             System.out.println("Choose order operation: " + '\n' +
@@ -458,13 +458,14 @@ public class Customer {
                     cancelOrder(sc);
                     break;
                 case 3:
-                    if (allOrders.isEmpty()) {
+                    /*if (allOrders.isEmpty()) {
                         System.out.println("No order history.");
                         return;
                     }
                     for (Order order : allOrders) {
                         order.displayOrderDetails();
-                    }
+                    }*/
+                    Order.getOrdersFromFile(this);
                     break;
                 case 4:
                     return;
@@ -494,7 +495,7 @@ public class Customer {
         }
     }
 
-    private void cancelOrder(Scanner sc) {
+    private void cancelOrder(Scanner sc) throws IOException {
         if (allOrders.isEmpty()) {
             System.out.println("No order history.");
             return;

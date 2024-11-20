@@ -1,5 +1,9 @@
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
@@ -74,7 +78,7 @@ public class Order {
         return null;
     }
 
-    public void updateOrderStatus(Scanner sc) {
+    public void updateOrderStatus(Scanner sc) throws IOException {
         int choice = -1;
         System.out.println("Choose status: " + '\n' +
                            "1. Cooking" + '\n' +
@@ -110,15 +114,16 @@ public class Order {
                 this.orderStatus = "Delivered";
                 System.out.println("Status updated: Delivered");
                 completeOrder();
+                this.writeOrderToFile();
                 break;
             default:
                 break;
         }
     }
 
-    public void writeOrder() throws IOException {
+    public void writeOrderToFile() throws IOException {
         try {
-            FileWriter filewriter = new FileWriter("orderHistory.txt", true);
+            FileWriter filewriter = new FileWriter(customer.getUsername() + ".txt", true);
 
             filewriter.write(customer.getUsername() + '\n' +
                                customer.getVIPStatus() + '\n' +
@@ -133,10 +138,10 @@ public class Order {
                                address + '\n');
 
             for (MenuItem item : itemList.keySet()) {
-                filewriter.write(item.getItemName() + ':' + itemList.get(item));
+                filewriter.write(item.getItemName() + ':' + itemList.get(item) + '\n');
             }
 
-            filewriter.write("XOXOXOXO");
+            filewriter.write("XOXOXOXO" + '\n');
 
             filewriter.close();
         }
@@ -145,10 +150,66 @@ public class Order {
         }
     }
 
-    public void cancelOrder() {
+    public static void getOrdersFromFile(Customer customer) {
+        String fileName = customer.getUsername();
+
+        try {
+            List<String> allOders = Files.readAllLines(Paths.get(fileName + ".txt"));
+
+            if (allOders.isEmpty()) {
+                System.out.println("You've not ordered anything yet.");
+                return;
+            }
+
+            int ind = 0;
+            int x;
+
+            while (ind < allOders.size()) {
+                String username = allOders.get(ind++);
+                String vipStatus = allOders.get(ind++);
+                String orderID = allOders.get(ind++);
+                String orderTotal = allOders.get(ind++);
+                String orderDate = allOders.get(ind++);
+                String orderPlaceTime = allOders.get(ind++);
+                String orderStatus = allOders.get(ind++);
+                String orderCompleteTime = allOders.get(ind++);
+                String specialRequest = allOders.get(ind++);
+                String specialRequestAccepted = allOders.get(ind++);
+                String address = allOders.get(ind++);
+
+                System.out.println("Username: " + username + '\n' +
+                                   "VIP: " + vipStatus + '\n' +
+                                   "Order ID: " + orderID + '\n' +
+                                   "Order Total: " + orderTotal + '\n' +
+                                   "Order Date: " + orderDate + '\n' +
+                                   "Order Place Time: " + orderPlaceTime + '\n' +
+                                   "Order Status: " + orderStatus + '\n' +
+                                   "Order Complete Time: " + orderCompleteTime + '\n' +
+                                   "Special Request: " + specialRequest + " Accepted: " + specialRequestAccepted + '\n' +
+                                   "Address: " + address + '\n');
+
+                x = ind;
+                while (ind < allOders.size() && !allOders.get(ind).equals("XOXOXOXO")) {
+                    String item = allOders.get(ind++);
+                    String[] itemSplit = item.split(":");
+                    String itemName = itemSplit[0];
+                    String itemQuantity = itemSplit[1];
+                    System.out.println(ind - x + ". " + itemName + " : " + itemQuantity);
+                }
+
+                ind++;
+            }
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void cancelOrder() throws IOException {
         this.orderStatus = "Cancelled";
         this.orderCompleteTime = LocalTime.now();
         this.isRefunded = true;
+        this.writeOrderToFile();
     }
 
     public boolean getRefundStatus() {

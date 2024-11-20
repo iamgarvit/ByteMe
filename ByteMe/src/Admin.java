@@ -48,7 +48,7 @@ public class Admin {
     private void adminData() throws IOException{
         try {
             FileWriter fw = new FileWriter("adminData.txt", true);
-            fw.write(username + "--" + password + "--" + name);
+            fw.write(username + "--" + password + "--" + name + '\n');
             fw.close();
         }
         catch (IOException e) {
@@ -108,7 +108,7 @@ public class Admin {
 
     public static void initialiseAdmin() {}
 
-    private void displayAdminMenu(Scanner sc) {
+    private void displayAdminMenu(Scanner sc) throws IOException {
         while (true) {
             int choice = -1;
             System.out.println("Choose option: " + '\n' +
@@ -143,7 +143,7 @@ public class Admin {
         }
     }
 
-    private void manageMenu(Scanner sc) {
+    private void manageMenu(Scanner sc) throws IOException {
         while (true) {
             int option = -1;
             System.out.println("Choose option: " + '\n' +
@@ -311,7 +311,7 @@ public class Admin {
         }
     }
 
-    private void removeMenuItem(Scanner sc) {
+    private void removeMenuItem(Scanner sc) throws IOException {
         MenuItem itemToRemove = findItem(sc);
         if (itemToRemove == null) {
             System.out.println("Item is not in menu.");
@@ -385,7 +385,7 @@ public class Admin {
         }
     }
 
-    private void updateItemAvailability(Scanner sc) {
+    private void updateItemAvailability(Scanner sc) throws IOException {
         MenuItem itemToUpdate = findItem(sc);
 
         if (itemToUpdate == null) {
@@ -423,7 +423,7 @@ public class Admin {
         itemToUpdate.displayItemDetails();
     }
 
-    private void updateOrdersAfterAvailability(MenuItem itemToUpdate) {
+    private void updateOrdersAfterAvailability(MenuItem itemToUpdate) throws IOException {
         for (Order order : allOrdersAdmin.keySet()) {
             if (!((order.getOrderStatus().equals("Delivered")) || order.getOrderStatus().equals("Cancelled"))) {
                 if (order.getItems().contains(itemToUpdate)) {
@@ -442,7 +442,7 @@ public class Admin {
         return null;
     }
 
-    private void manageOrder(Scanner sc) {
+    private void manageOrder(Scanner sc) throws IOException {
         while (true) {
             int choice = -1;
             System.out.println("Choose option: " + '\n' +
@@ -510,7 +510,7 @@ public class Admin {
         }
     }
 
-    private void updateOrderStatus(Scanner sc) {
+    private void updateOrderStatus(Scanner sc) throws IOException {
         if (allOrdersAdmin.isEmpty()) {
             System.out.println("There are no orders.");
             return;
