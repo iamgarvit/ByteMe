@@ -11,9 +11,14 @@ public class Cart {
         this.customer = customer;
     }
 
-    public void addItem(MenuItem item, int quantity) {
-        cartList.put(item, quantity);
-        cartTotal += item.getItemPrice()*quantity;
+    public boolean addItem(MenuItem item, int quantity) {
+        if (item.getItemAvailability()) {
+            cartList.put(item, quantity);
+            cartTotal += item.getItemPrice() * quantity;
+            return true;
+        }
+        System.out.println("Item: " + item.getItemName() + " is unavailable.");
+        return false;
     }
 
     public void modifyQuantity(MenuItem item, int quantity) {

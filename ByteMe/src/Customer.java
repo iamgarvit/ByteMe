@@ -297,10 +297,10 @@ public class Customer {
                         return;
                     }
 
-                    if (!itemToAdd.getItemAvailability()) {
+                    /*if (!itemToAdd.getItemAvailability()) {
                         System.out.println("Item: " + itemToAdd.getItemName() + " is not available.");
                         return;
-                    }
+                    }*/
 
                     int quantity = 0;
                     System.out.println("Enter quantity: ");

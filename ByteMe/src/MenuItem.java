@@ -43,6 +43,9 @@ public class MenuItem {
         MenuItem mixParatha = new MenuItem("M004", "Mix Paratha", 30, true, "Meal");
         MenuItem mountainDew = new MenuItem("B003", "Mountain Dew", 20, true, "Beverage");
         MenuItem vegRoll = new MenuItem("S003", "Veg Roll", 40, true, "Snack");
+        MenuItem samosa = new MenuItem("S004", "Samosa", 10, false, "Snack");
+        MenuItem biryani = new MenuItem("M005", "Biryani", 50, false, "Meal");
+        MenuItem sandwich = new MenuItem("S005", "Sandwich", 30, false, "Snack");
     }
 
     public static void initialiseMenuItems() {}
@@ -133,6 +136,10 @@ public class MenuItem {
         itemReviews.add(review);
     }
 
+    public void setAvailability(Boolean newAvailability) {
+        this.itemAvailability = newAvailability;
+    }
+
     public void displayItemReviews() {
         if (itemReviews.isEmpty()) {
             System.out.println("No reviews available.");
@@ -144,5 +151,15 @@ public class MenuItem {
                                "Item name: " + review.getItem().getItemName() + '\n' +
                                "Review: " + review.getReview() + '\n');
         }
+    }
+
+    public static ArrayList<MenuItem> getUnavailableItems() {
+        ArrayList<MenuItem> unavailableItems = new ArrayList<>();
+        for (MenuItem item : allItems) {
+            if (!item.getItemAvailability()) {
+                unavailableItems.add(item);
+            }
+        }
+        return unavailableItems;
     }
 }
