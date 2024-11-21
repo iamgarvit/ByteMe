@@ -61,7 +61,7 @@ public class Admin {
         fw.close();
     }
 
-    public static void adminLogin(String username, String password, Scanner sc) throws IOException {
+    public static boolean adminLogin(String username, String password, Scanner sc, int Test) throws IOException {
         /*Admin adminToLogin = findAdminByUsername(username);
         if (adminToLogin == null) {
             System.out.println("Admin with username: " + username + " does not exists.");
@@ -85,20 +85,22 @@ public class Admin {
                     if (adminData[1].equals(password)) {
                         Admin adminTologin = findAdminByUsername(username);
                         System.out.println("Login successful.");
-                        adminTologin.displayAdminMenu(sc);
-                        return;
+                        adminTologin.displayAdminMenu(sc, Test);
+                        return true;
                     }
                     else {
                         System.out.println("Login unsuccessful. Invalid credentials.");
-                        return;
+                        return false;
                     }
                 }
             }
 
             System.out.println("Username: " + username + "not found.");
+            return false;
         }
         catch (IOException e) {
             System.out.println("Unable to login. Please try again.");
+            return false;
         }
     }
 
@@ -113,7 +115,8 @@ public class Admin {
 
     public static void initialiseAdmin() {}
 
-    private void displayAdminMenu(Scanner sc) throws IOException {
+    private void displayAdminMenu(Scanner sc, int Test) throws IOException {
+        if (Test == 1) return;
         while (true) {
             int choice = -1;
             System.out.println("Choose option: " + '\n' +

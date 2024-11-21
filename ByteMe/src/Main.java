@@ -88,7 +88,7 @@ public class Main {
                     System.out.println("Enter customer password: ");
                     String password = sc.nextLine();
 
-                    Customer.customerLogin(username, password, sc);
+                    Customer.customerLogin(username, password, sc, 0);
                     break;
                 case 2:
                     System.out.println("Enter admin username: ");
@@ -96,7 +96,7 @@ public class Main {
                     System.out.println("Enter admin password: ");
                     String passwordAdmin = sc.nextLine();
 
-                    Admin.adminLogin(usernameAdmin, passwordAdmin, sc);
+                    Admin.adminLogin(usernameAdmin, passwordAdmin, sc, 0);
                     break;
                 case 3:
                     return;

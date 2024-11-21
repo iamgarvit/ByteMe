@@ -93,7 +93,7 @@ public class Customer {
         System.out.println("Username already exists.");
     }
 
-    public static void customerLogin(String username, String password, Scanner sc) throws IOException {
+    public static boolean customerLogin(String username, String password, Scanner sc, int Test) throws IOException {
         /*Customer customerToLogin = findCustomerByUsername(username);
         if (customerToLogin == null) {
             System.out.println("Customer with username: " + username + " does not exist.");
@@ -117,24 +117,27 @@ public class Customer {
                     if (customerData[1].equals(password)) {
                         Customer customerToLogin = findCustomerByUsername(username);
                         System.out.println("Login successful.");
-                        customerToLogin.displayCustomerMenu(sc);
-                        return;
+                        customerToLogin.displayCustomerMenu(sc, Test);
+                        return true;
                     }
                     else {
                         System.out.println("Login unsuccessful. Invalid credentials.");
-                        return;
+                        return false;
                     }
                 }
             }
 
             System.out.println("Username: " + username + "not found.");
+            return false;
         }
         catch (IOException e) {
             System.out.println("Unable to login. Please try again.");
+            return false;
         }
     }
 
-    private void displayCustomerMenu(Scanner sc) throws IOException {
+    private void displayCustomerMenu(Scanner sc, int Test) throws IOException {
+        if (Test == 1)  return;
         while (true) {
             int choice = -1;
             System.out.println("Choose option:" + '\n' +
